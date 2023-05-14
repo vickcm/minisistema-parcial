@@ -19,7 +19,6 @@ async function getClients(filter = {}) {
 
     const filterMongo = {};
     if (filter.name) {
-      // Si el filtro tiene un nombre
       filterMongo.name = { $regex: filter.name, $options: "i" }; // i = insensible a mayúsculas y minúsculas
     }
     return db.collection("Clients").find(filterMongo).toArray();
