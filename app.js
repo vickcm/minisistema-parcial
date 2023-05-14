@@ -13,7 +13,7 @@ app.use(ProjectsRoute);
 app.use('/api', ProjectsRouteApi); 
 app.use('/api', ClientsRouteApi);
 
-app.listen(2022, function () {
+app.listen(2222, function () {
   // levantar el servidor
-  console.log("Servidor levantado! http://localhost:2022");
+  console.log("Servidor levantado! http://localhost:2222");
 });
