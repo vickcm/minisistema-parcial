@@ -9,7 +9,6 @@ async function createClient(clientNew) {
     await db.collection("Clients").insertOne(clientNew);
     return clientNew;
   } catch (err) {
-    console.error(err);
     throw err;
   }
 }
@@ -17,14 +16,14 @@ async function createClient(clientNew) {
 async function getClients(filter = {}) {
   try {
     await client.connect();
-    console.log(filter);
+
     const filterMongo = {};
-    if (filter.name) { // Si el filtro tiene un nombre
+    if (filter.name) {
+      // Si el filtro tiene un nombre
       filterMongo.name = { $regex: filter.name, $options: "i" }; // i = insensible a mayúsculas y minúsculas
     }
     return db.collection("Clients").find(filterMongo).toArray();
   } catch (err) {
-    console.error(err);
     throw err;
   }
 }
@@ -35,11 +34,9 @@ async function getClientById(idClient) {
     const filterMongo = { _id: new ObjectId(idClient) };
     return db.collection("Clients").findOne(filterMongo);
   } catch (err) {
-    console.error(err);
     throw err;
   }
 }
-
 
 async function updateClient(idClient, clientUpdate) {
   try {
@@ -49,7 +46,6 @@ async function updateClient(idClient, clientUpdate) {
       .updateOne({ _id: new ObjectId(idClient) }, { $set: clientUpdate });
     return clientUpdate;
   } catch (err) {
-    console.error(err);
     throw err;
   }
 }
@@ -57,14 +53,13 @@ async function updateClient(idClient, clientUpdate) {
 async function getProjectsByClient(clientId) {
   try {
     await client.connect();
-    return db.collection('Clients-Projects').findOne({ clientId: new ObjectId(clientId) })
-    
+    return db
+      .collection("Clients-Projects")
+      .findOne({ clientId: new ObjectId(clientId) });
   } catch (err) {
-    console.error(err);
     throw err;
   }
 }
-
 
 export {
   createClient,

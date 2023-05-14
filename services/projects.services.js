@@ -6,7 +6,7 @@ const db = client.db("AH20231CP1");
 async function getProjects(filter = {}) {
   try {
     await client.connect();
-    console.log(filter);
+
     const filterMongo = {};
     if (filter.section) {
       filterMongo.section = { $regex: filter.section, $options: "i" };
@@ -16,18 +16,15 @@ async function getProjects(filter = {}) {
     }
     return db.collection("Projects").find(filterMongo).toArray();
   } catch (err) {
-    console.error(err);
     throw err;
   }
 }
 
 async function getProjectsbySection(section) {
   try {
-    console.log(section);
     await client.connect();
     return db.collection("Projects").find({ section: section }).toArray();
   } catch (err) {
-    console.error(err);
     throw err;
   }
 }
@@ -38,7 +35,6 @@ async function createProject(project) {
     await db.collection("Projects").insertOne(project);
     return project;
   } catch (err) {
-    console.error(err);
     throw err;
   }
 }
@@ -72,7 +68,6 @@ async function getProjectById(idProject) {
 
     return db.collection("Projects").findOne(filterMongo);
   } catch (err) {
-    console.error(err);
     throw err;
   }
 }
@@ -90,15 +85,12 @@ async function updateProject(idProject, projectUpdate) {
       .findOne({ _id: new ObjectId(idProject) });
 
     return updateProjectsClientsProjects(idProject, projectNew);
-
   } catch (err) {
-    console.error(err);
     throw err;
   }
 }
 
 // actualizo el proyecto en la colección "Clients-Projects"
-
 
 async function updateProjectsClientsProjects(idProject, projectNew) {
   try {
@@ -113,18 +105,13 @@ async function updateProjectsClientsProjects(idProject, projectNew) {
         { "projects._id": new ObjectId(idProject) },
         { $set: { "projects.$": projectNew } }
       );
-    } 
-    
+    }
 
     return projectNew;
   } catch (err) {
-    console.error(err);
     throw err;
   }
-
-
 }
-
 
 async function deleteProject(idProject) {
   try {
@@ -132,41 +119,41 @@ async function deleteProject(idProject) {
     // Obtener el ID del cliente y el índice del proyecto a borrar
     const filter = { "projects._id": new ObjectId(idProject) };
     const projection = { "projects.$": 1 };
-    const result = await db.collection("Clients-Projects").findOne(filter, projection);
+    const result = await db
+      .collection("Clients-Projects")
+      .findOne(filter, projection);
     if (!result) {
       throw new Error("Proyecto no encontrado");
     }
-    const projectIndex = result.projects.findIndex((project) => project._id.toString() === idProject);
+    const projectIndex = result.projects.findIndex(
+      (project) => project._id.toString() === idProject
+    );
     const clientId = result.clientId.toString();
-    
+
     // Eliminar el proyecto de la colección "Projects"
     await db.collection("Projects").deleteOne({ _id: new ObjectId(idProject) });
 
     // Eliminar el proyecto de la colección "Clients-Projects"
-    await db.collection("Clients-Projects").updateOne(
-      { clientId: new ObjectId(clientId) },
-      { $pull: { projects: { _id: new ObjectId(idProject) } } }
-    );
+    await db
+      .collection("Clients-Projects")
+      .updateOne(
+        { clientId: new ObjectId(clientId) },
+        { $pull: { projects: { _id: new ObjectId(idProject) } } }
+      );
 
     return {
       id: idProject,
     };
   } catch (err) {
-    console.error(err);
     throw err;
   }
-} 
-
-
-
-
+}
 
 async function getProjectsByIds(projectsIds) {
   try {
     const filterMongo = { _id: { $in: projectsIds } };
     return db.collection("Projects").find(filterMongo).toArray();
   } catch (err) {
-    console.error(err);
     throw err;
   }
 }
