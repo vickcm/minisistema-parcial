@@ -149,14 +149,7 @@ async function deleteProject(idProject) {
   }
 }
 
-async function getProjectsByIds(projectsIds) {
-  try {
-    const filterMongo = { _id: { $in: projectsIds } };
-    return db.collection("Projects").find(filterMongo).toArray();
-  } catch (err) {
-    throw err;
-  }
-}
+
 
 export {
   getProjectsbySection,
@@ -165,6 +158,5 @@ export {
   getProjectById,
   updateProject,
   deleteProject,
-  getProjectsByIds,
   addProjectsClientsProjects,
 };
